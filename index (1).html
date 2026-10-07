@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Eksplorasi Sudut Pusat dan Sudut Keliling</title>
+<style>
+:root{--bg:#fbfaf6;--card:#ffffff;--ink:#1f2328;--muted:#5b6168;--line:#d9d6cc;--pusat:#534AB7;--kel:#D85A30;--busur:#1D9E75;--warn:#9a6700;--warnbg:#fff4d6;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17181a;--card:#202124;--ink:#ececec;--muted:#a8acb2;--line:#3a3b3f;--pusat:#9d96ef;--kel:#f0926c;--busur:#4fc9a0;--warn:#f2c94c;--warnbg:#3a3015}}
+:root[data-theme="dark"]{--bg:#17181a;--card:#202124;--ink:#ececec;--muted:#a8acb2;--line:#3a3b3f;--pusat:#9d96ef;--kel:#f0926c;--busur:#4fc9a0;--warn:#f2c94c;--warnbg:#3a3015}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.5}
+main{max-width:560px;margin:0 auto;padding:16px}
+h1{font-size:1.25rem;margin:4px 0 2px}
+.sub{color:var(--muted);font-size:.92rem;margin:0 0 12px}
+.board{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:6px;touch-action:none}
+svg{display:block;width:100%;height:auto;user-select:none}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.stat small{display:block;color:var(--muted);font-size:.8rem}
+.stat b{font-size:1.45rem;font-weight:600}
+.p{color:var(--pusat)}.k{color:var(--kel)}
+.warn{background:var(--warnbg);color:var(--warn);border-radius:10px;padding:8px 12px;font-size:.9rem;margin:0 0 10px;display:none}
+.how{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:.92rem}
+.how ol{margin:6px 0 0;padding-left:20px}
+button{font:inherit;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:8px 14px;margin-top:10px;cursor:pointer}
+.handle{cursor:grab}
+</style>
+</head>
+<body>
+<main>
+<h1>Sudut Pusat dan Sudut Keliling</h1>
+<p class="sub">Geser titik <b>Q</b>, <b>A</b>, atau <b>B</b> di sepanjang lingkaran. Amati ∠AQB dan ∠AOB.</p>
+<div class="board">
+<svg id="sv" viewBox="0 0 400 400" role="img" aria-label="Lingkaran dengan pusat O, titik A, B, dan Q yang dapat digeser">
+<circle cx="200" cy="200" r="150" fill="none" stroke="var(--line)" stroke-width="2.5"/>
+<path id="arc" fill="none" stroke="var(--busur)" stroke-width="7" stroke-linecap="round"/>
+<path id="mO" fill="var(--pusat)" fill-opacity=".15" stroke="var(--pusat)" stroke-width="2"/>
+<path id="mP" fill="var(--kel)" fill-opacity=".15" stroke="var(--kel)" stroke-width="2"/>
+<line id="oa" stroke="var(--pusat)" stroke-width="3"/><line id="ob" stroke="var(--pusat)" stroke-width="3"/>
+<line id="pa" stroke="var(--kel)" stroke-width="3"/><line id="pb" stroke="var(--kel)" stroke-width="3"/>
+<circle cx="200" cy="200" r="5" fill="var(--pusat)"/>
+<text x="186" y="196" font-size="18" font-weight="700" fill="var(--pusat)" text-anchor="end">O</text>
+<g id="gA"><circle id="hA" r="20" fill="transparent" class="handle"/><circle id="dA" r="8" fill="var(--ink)"/><text id="tA" font-size="20" font-weight="700" fill="var(--ink)" text-anchor="middle">A</text></g>
+<g id="gB"><circle id="hB" r="20" fill="transparent" class="handle"/><circle id="dB" r="8" fill="var(--ink)"/><text id="tB" font-size="20" font-weight="700" fill="var(--ink)" text-anchor="middle">B</text></g>
+<g id="gP"><circle id="hP" r="22" fill="transparent" class="handle"/><circle id="dP" r="10" fill="var(--kel)"/><text id="tP" font-size="20" font-weight="700" fill="var(--kel)" text-anchor="middle">Q</text></g>
+</svg>
+</div>
+<div class="stats">
+<div class="stat"><small>∠AQB (sudut keliling)</small><b class="k" id="vP">–</b></div>
+<div class="stat"><small>∠AOB (sudut pusat)</small><b class="p" id="vO">–</b></div>
+<div class="stat"><small>∠AOB : ∠AQB</small><b id="vR">–</b></div>
+</div>
+<p class="warn" id="warn">Titik Q sedang berada di busur kecil (busur hijau). Geser Q kembali ke busur besar agar menghadap busur AB.</p>
+<div class="how">
+<b>Langkah pengamatan</b>
+<ol>
+<li>Geser titik Q ke beberapa posisi di busur besar. Catat ∠AQB setiap kali.</li>
+<li>Geser A atau B untuk mengubah besar busur AB, lalu ulangi langkah 1.</li>
+<li>Bandingkan ∠AQB dengan ∠AOB. Apa yang selalu sama?</li>
+</ol>
+<button id="reset" type="button">Atur ulang</button>
+</div>
+</main>
+<script>
+(function(){
+var cx=200,cy=200,R=150,init={A:230,B:340,P:110},a={A:230,B:340,P:110};
+var sv=document.getElementById('sv');
+function pt(d,r){r=r||R;var t=d*Math.PI/180;return [cx+r*Math.cos(t),cy-r*Math.sin(t)];}
+function set(id,o){var e=document.getElementById(id);for(var k in o)e.setAttribute(k,o[k]);}
+function norm(d){d%=360;return d<0?d+360:d;}
+function ccw(from,to){return norm(to-from);}
+function vang(V,X,Y){var u=[X[0]-V[0],X[1]-V[1]],v=[Y[0]-V[0],Y[1]-V[1]];var c=(u[0]*v[0]+u[1]*v[1])/Math.hypot(u[0],u[1])/Math.hypot(v[0],v[1]);return Math.acos(Math.max(-1,Math.min(1,c)))*180/Math.PI;}
+function wedge(V,X,Y,r){var dx=function(P){var l=Math.hypot(P[0]-V[0],P[1]-V[1]);return [V[0]+(P[0]-V[0])/l*r,V[1]+(P[1]-V[1])/l*r];};var m=dx(X),n=dx(Y);var cr=(X[0]-V[0])*(Y[1]-V[1])-(X[1]-V[1])*(Y[0]-V[0]);return 'M'+V[0]+' '+V[1]+' L'+m[0]+' '+m[1]+' A'+r+' '+r+' 0 0 '+(cr>0?1:0)+' '+n[0]+' '+n[1]+' Z';}
+function fmt(x){return (Math.round(x*10)/10).toString().replace('.',',')+'°';}
+function draw(){
+var A=pt(a.A),B=pt(a.B),P=pt(a.P),O=[cx,cy];
+var s=ccw(a.A,a.B),start,end;
+if(s<=180){start=a.A;end=a.B;}else{start=a.B;end=a.A;s=360-s;}
+var S=pt(start),E=pt(end);
+set('arc',{d:'M'+S[0]+' '+S[1]+' A'+R+' '+R+' 0 0 0 '+E[0]+' '+E[1]});
+set('oa',{x1:cx,y1:cy,x2:A[0],y2:A[1]});set('ob',{x1:cx,y1:cy,x2:B[0],y2:B[1]});
+set('pa',{x1:P[0],y1:P[1],x2:A[0],y2:A[1]});set('pb',{x1:P[0],y1:P[1],x2:B[0],y2:B[1]});
+[['A',A],['B',B],['P',P]].forEach(function(q){var k=q[0],X=q[1],L=pt(a[k],R+26);set('h'+k,{cx:X[0],cy:X[1]});set('d'+k,{cx:X[0],cy:X[1]});set('t'+k,{x:L[0],y:L[1]+7});});
+var onMinor=ccw(start,a.P)<s&&ccw(start,a.P)>0;
+var vo=s,vp=vang(P,A,B);
+set('mO',{d:wedge(O,A,B,30)});set('mP',{d:wedge(P,A,B,34)});
+document.getElementById('vO').textContent=fmt(vo);
+document.getElementById('vP').textContent=fmt(vp);
+document.getElementById('vR').textContent=(vp>0.5?(Math.round(vo/vp*100)/100).toString().replace('.',','):'–')+' : 1';
+document.getElementById('warn').style.display=onMinor?'block':'none';
+}
+var drag=null;
+function toDeg(e){var r=sv.getBoundingClientRect();var x=(e.clientX-r.left)*400/r.width,y=(e.clientY-r.top)*400/r.height;return norm(Math.atan2(cy-y,x-cx)*180/Math.PI);}
+['A','B','P'].forEach(function(k){document.getElementById('g'+k).addEventListener('pointerdown',function(e){drag=k;sv.setPointerCapture(e.pointerId);e.preventDefault();});});
+sv.addEventListener('pointermove',function(e){if(!drag)return;var d=toDeg(e);var other=drag==='A'?a.B:drag==='B'?a.A:null;if(other!==null){var g=Math.min(ccw(d,other),ccw(other,d));if(g<12)return;}a[drag]=d;draw();});
+function up(){drag=null;}
+sv.addEventListener('pointerup',up);sv.addEventListener('pointercancel',up);
+document.getElementById('reset').addEventListener('click',function(){a.A=init.A;a.B=init.B;a.P=init.P;draw();});
+draw();
+})();
+</script>
+</body>
+</html>
